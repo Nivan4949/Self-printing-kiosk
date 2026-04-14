@@ -1,0 +1,8 @@
+2026-03-11 11:13:12.3349 30616 Error parsing config E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\..\Data\profiles.xml System.InvalidOperationException: Could not map XML element <ProfileArray> to System.Collections.Generic.List`1[[NAPS2.Config.ObsoleteTypes.ScanSettingsV0, NAPS2.Lib, Version=8.2.1.0, Culture=neutral, PublicKeyToken=null]]. Expected <ArrayOfScanSettings>.
+   at T NAPS2.Serialization.XmlSerializer<T>.DeserializeFromXDocument(XDocument doc)
+   at T NAPS2.Serialization.XmlSerializer<T>.Deserialize(Stream stream)
+   at ImmutableList<ScanProfile> NAPS2.Config.ProfileSerializer.ReadVeryOldProfiles(Stream configFileStream)
+   at ImmutableList<ScanProfile> NAPS2.Config.ProfileSerializer.DeserializeProfiles(Stream stream)
+   at ConfigStorage<ImmutableList<ScanProfile>> NAPS2.Config.ProfileSerializer.InternalDeserialize(Stream stream, XDocument doc)
+   at T NAPS2.Serialization.VersionedSerializer<T>.Deserialize(Stream stream)
+   at void NAPS2.Config.Model.FileConfigScope<TConfig>.ReadHandshake()

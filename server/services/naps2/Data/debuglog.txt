@@ -1,0 +1,165 @@
+2026-03-10 22:09:41.0542 45460 Debug: Using new dsm. 
+2026-03-10 22:09:41.1279 45460 Debug: Thread 1: OpenManager. 
+2026-03-10 22:09:41.2874 45460 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:09:41.2874 45460 Debug: Source id = 1 
+2026-03-10 22:09:41.2874 45460 Debug: Thread 1: CloseManager. 
+2026-03-10 22:10:57.7408 21408 Debug: Using new dsm. 
+2026-03-10 22:10:57.8072 21408 Debug: Thread 1: OpenManager. 
+2026-03-10 22:10:57.9339 21408 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:10:57.9339 21408 Debug: Source id = 1 
+2026-03-10 22:10:57.9339 21408 Debug: Thread 1: CloseManager. 
+2026-03-10 22:10:59.0264 41476 Debug: Using new dsm. 
+2026-03-10 22:10:59.0907 41476 Debug: Thread 1: OpenManager. 
+2026-03-10 22:10:59.2521 41476 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:10:59.2521 41476 Debug: Source id = 1 
+2026-03-10 22:10:59.2521 41476 Debug: Thread 1: CloseManager. 
+2026-03-10 22:11:00.4610 35968 Debug: Using new dsm. 
+2026-03-10 22:11:00.5240 35968 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-10 22:11:00.5240 35968 NAPS2.TW - Opening session 
+2026-03-10 22:11:00.5294 35968 Debug: Thread 1: OpenManager. 
+2026-03-10 22:11:00.6511 35968 NAPS2.TW - StateChanged (to 3) 
+2026-03-10 22:11:00.6511 35968 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:11:00.6511 35968 NAPS2.TW - Finding source 
+2026-03-10 22:11:00.6511 35968 Debug: Source id = 1 
+2026-03-10 22:11:00.6511 35968 NAPS2.TW - Opening source 
+2026-03-10 22:11:00.6682 35968 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-10 22:11:00.6682 35968 Debug: Thread 1: OpenSource. 
+2026-03-10 22:11:00.7473 35968 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-10 22:11:00.7852 35968 Debug: Thread 1: CloseManager. 
+2026-03-10 22:11:00.7852 35968 NAPS2.TW - StateChanged (to 2) 
+2026-03-10 22:12:18.7856 18100 Debug: Using new dsm. 
+2026-03-10 22:12:18.8625 18100 Debug: Thread 1: OpenManager. 
+2026-03-10 22:12:19.0240 18100 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:12:19.0271 18100 Debug: Source id = 1 
+2026-03-10 22:12:19.0271 18100 Debug: Thread 1: CloseManager. 
+2026-03-10 22:12:20.1618 42660 Debug: Using new dsm. 
+2026-03-10 22:12:20.2293 42660 Debug: Thread 1: OpenManager. 
+2026-03-10 22:12:20.3565 42660 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:12:20.3565 42660 Debug: Source id = 1 
+2026-03-10 22:12:20.3565 42660 Debug: Thread 1: CloseManager. 
+2026-03-10 22:12:21.2471 13736 Debug: Using new dsm. 
+2026-03-10 22:12:21.3122 13736 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-10 22:12:21.3122 13736 NAPS2.TW - Opening session 
+2026-03-10 22:12:21.3122 13736 Debug: Thread 1: OpenManager. 
+2026-03-10 22:12:21.4376 13736 NAPS2.TW - StateChanged (to 3) 
+2026-03-10 22:12:21.4376 13736 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:12:21.4376 13736 NAPS2.TW - Finding source 
+2026-03-10 22:12:21.4376 13736 Debug: Source id = 1 
+2026-03-10 22:12:21.4376 13736 NAPS2.TW - Opening source 
+2026-03-10 22:12:21.4549 13736 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-10 22:12:21.4549 13736 Debug: Thread 1: OpenSource. 
+2026-03-10 22:12:21.5170 13736 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-10 22:12:21.5562 13736 Debug: Thread 1: CloseManager. 
+2026-03-10 22:12:21.5562 13736 NAPS2.TW - StateChanged (to 2) 
+2026-03-10 22:12:38.7253 36600 Debug: Using new dsm. 
+2026-03-10 22:12:38.7922 36600 Debug: Thread 1: OpenManager. 
+2026-03-10 22:12:38.9222 36600 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:12:38.9222 36600 Debug: Source id = 1 
+2026-03-10 22:12:38.9222 36600 Debug: Thread 1: CloseManager. 
+2026-03-10 22:12:40.0583 8436 Debug: Using new dsm. 
+2026-03-10 22:12:40.1691 8436 Debug: Thread 1: OpenManager. 
+2026-03-10 22:12:40.3026 8436 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:12:40.3026 8436 Debug: Source id = 1 
+2026-03-10 22:12:40.3026 8436 Debug: Thread 1: CloseManager. 
+2026-03-10 22:12:41.1922 20592 Debug: Using new dsm. 
+2026-03-10 22:12:41.2550 20592 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-10 22:12:41.2550 20592 NAPS2.TW - Opening session 
+2026-03-10 22:12:41.2610 20592 Debug: Thread 1: OpenManager. 
+2026-03-10 22:12:41.3873 20592 NAPS2.TW - StateChanged (to 3) 
+2026-03-10 22:12:41.3873 20592 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:12:41.3873 20592 NAPS2.TW - Finding source 
+2026-03-10 22:12:41.3873 20592 Debug: Source id = 1 
+2026-03-10 22:12:41.3873 20592 NAPS2.TW - Opening source 
+2026-03-10 22:12:41.4043 20592 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-10 22:12:41.4043 20592 Debug: Thread 1: OpenSource. 
+2026-03-10 22:12:41.4670 20592 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-10 22:12:41.5047 20592 Debug: Thread 1: CloseManager. 
+2026-03-10 22:12:41.5047 20592 NAPS2.TW - StateChanged (to 2) 
+2026-03-10 22:13:03.9419 29832 Debug: Using new dsm. 
+2026-03-10 22:13:04.0080 29832 Debug: Thread 1: OpenManager. 
+2026-03-10 22:13:04.1341 29832 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:13:04.1341 29832 Debug: Source id = 1 
+2026-03-10 22:13:04.1341 29832 Debug: Thread 1: CloseManager. 
+2026-03-10 22:13:04.9726 50472 Debug: Using new dsm. 
+2026-03-10 22:13:05.0356 50472 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-10 22:13:05.0356 50472 NAPS2.TW - Opening session 
+2026-03-10 22:13:05.0356 50472 Debug: Thread 1: OpenManager. 
+2026-03-10 22:13:05.1959 50472 NAPS2.TW - StateChanged (to 3) 
+2026-03-10 22:13:05.2002 50472 Debug: Using TWAIN2 memory functions. 
+2026-03-10 22:13:05.2002 50472 NAPS2.TW - Finding source 
+2026-03-10 22:13:05.2002 50472 Debug: Source id = 1 
+2026-03-10 22:13:05.2002 50472 NAPS2.TW - Opening source 
+2026-03-10 22:13:05.2153 50472 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-10 22:13:05.2153 50472 Debug: Thread 1: OpenSource. 
+2026-03-10 22:13:05.2769 50472 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-10 22:13:05.3220 50472 Debug: Thread 1: CloseManager. 
+2026-03-10 22:13:05.3220 50472 NAPS2.TW - StateChanged (to 2) 
+2026-03-11 10:51:36.9905 46820 Debug: Using new dsm. 
+2026-03-11 10:51:37.1107 46820 Debug: Thread 1: OpenManager. 
+2026-03-11 10:51:37.3449 46820 Debug: Using TWAIN2 memory functions. 
+2026-03-11 10:51:37.3449 46820 Debug: Source id = 1 
+2026-03-11 10:51:37.3449 46820 Debug: Thread 1: CloseManager. 
+2026-03-11 10:51:39.3404 25500 Debug: Using new dsm. 
+2026-03-11 10:51:39.4353 25500 Debug: Thread 1: OpenManager. 
+2026-03-11 10:51:39.6999 25500 Debug: Using TWAIN2 memory functions. 
+2026-03-11 10:51:39.6999 25500 Debug: Source id = 1 
+2026-03-11 10:51:39.6999 25500 Debug: Thread 1: CloseManager. 
+2026-03-11 10:51:41.1864 35140 Debug: Using new dsm. 
+2026-03-11 10:51:41.3163 35140 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-11 10:51:41.3220 35140 NAPS2.TW - Opening session 
+2026-03-11 10:51:41.3220 35140 Debug: Thread 1: OpenManager. 
+2026-03-11 10:51:41.5481 35140 NAPS2.TW - StateChanged (to 3) 
+2026-03-11 10:51:41.5577 35140 Debug: Using TWAIN2 memory functions. 
+2026-03-11 10:51:41.5577 35140 NAPS2.TW - Finding source 
+2026-03-11 10:51:41.5577 35140 Debug: Source id = 1 
+2026-03-11 10:51:41.5577 35140 NAPS2.TW - Opening source 
+2026-03-11 10:51:41.6139 35140 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-11 10:51:41.6177 35140 Debug: Thread 1: OpenSource. 
+2026-03-11 10:51:41.8411 35140 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-11 10:51:41.8978 35140 Debug: Thread 1: CloseManager. 
+2026-03-11 10:51:41.8978 35140 NAPS2.TW - StateChanged (to 2) 
+2026-03-11 10:58:05.7433 28820 Debug: Using new dsm. 
+2026-03-11 10:58:05.8528 28820 Debug: Thread 1: OpenManager. 
+2026-03-11 10:58:06.0523 28820 Debug: Using TWAIN2 memory functions. 
+2026-03-11 10:58:06.0555 28820 Debug: Source id = 1 
+2026-03-11 10:58:06.0555 28820 Debug: Thread 1: CloseManager. 
+2026-03-11 10:58:07.2837 25956 Debug: Using new dsm. 
+2026-03-11 10:58:07.3931 25956 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-11 10:58:07.3931 25956 NAPS2.TW - Opening session 
+2026-03-11 10:58:07.3931 25956 Debug: Thread 1: OpenManager. 
+2026-03-11 10:58:07.6154 25956 NAPS2.TW - StateChanged (to 3) 
+2026-03-11 10:58:07.6154 25956 Debug: Using TWAIN2 memory functions. 
+2026-03-11 10:58:07.6154 25956 NAPS2.TW - Finding source 
+2026-03-11 10:58:07.6208 25956 Debug: Source id = 1 
+2026-03-11 10:58:07.6208 25956 NAPS2.TW - Opening source 
+2026-03-11 10:58:07.6412 25956 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-11 10:58:07.6412 25956 Debug: Thread 1: OpenSource. 
+2026-03-11 10:58:07.7410 25956 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-11 10:58:07.8130 25956 Debug: Thread 1: CloseManager. 
+2026-03-11 10:58:07.8130 25956 NAPS2.TW - StateChanged (to 2) 
+2026-03-11 11:00:05.4580 25308 Debug: Using new dsm. 
+2026-03-11 11:00:05.5686 25308 Debug: Thread 1: OpenManager. 
+2026-03-11 11:00:05.7634 25308 Debug: Using TWAIN2 memory functions. 
+2026-03-11 11:00:05.7634 25308 Debug: Source id = 1 
+2026-03-11 11:00:05.7634 25308 Debug: Thread 1: CloseManager. 
+2026-03-11 11:00:06.9002 37472 Debug: Using new dsm. 
+2026-03-11 11:00:06.9850 37472 Using TWAIN DSM: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\naps2\App\lib\_win32\twaindsm.dll 
+2026-03-11 11:00:06.9850 37472 NAPS2.TW - Opening session 
+2026-03-11 11:00:06.9965 37472 Debug: Thread 1: OpenManager. 
+2026-03-11 11:00:07.1587 37472 NAPS2.TW - StateChanged (to 3) 
+2026-03-11 11:00:07.1587 37472 Debug: Using TWAIN2 memory functions. 
+2026-03-11 11:00:07.1587 37472 NAPS2.TW - Finding source 
+2026-03-11 11:00:07.1587 37472 Debug: Source id = 1 
+2026-03-11 11:00:07.1587 37472 NAPS2.TW - Opening source 
+2026-03-11 11:00:07.1799 37472 NAPS2.TW - Name: EPSON L4360 Series; Manu: EPSON; Family: EPSON Scan 2; Version: 6.7 6.7.81.39770; Protocol: 2.4 
+2026-03-11 11:00:07.1799 37472 Debug: Thread 1: OpenSource. 
+2026-03-11 11:00:07.2580 37472 NAPS2.TW - Finishing with error NAPS2.Scan.Exceptions.DeviceOfflineException: The selected scanner is offline.
+   at void NAPS2.Scan.Internal.Twain.TwainScanRunner.Init()
+2026-03-11 11:00:07.3048 37472 Debug: Thread 1: CloseManager. 
+2026-03-11 11:00:07.3048 37472 NAPS2.TW - StateChanged (to 2) 

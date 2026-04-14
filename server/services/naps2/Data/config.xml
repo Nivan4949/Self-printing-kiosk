@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<UserConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <KeyboardShortcuts />
+  <HasBeenRun>true</HasBeenRun>
+  <FirstRunDate>2026-03-11T11:07:52.1301062+05:30</FirstRunDate>
+  <Version>3</Version>
+  <DesktopToolStripDock>Top</DesktopToolStripDock>
+  <ProfilesToolStripDock>Top</ProfilesToolStripDock>
+  <FormStates>
+    <FormState>
+      <Name>WinFormsDesktopForm</Name>
+      <Location>
+        <X>0</X>
+        <Y>0</Y>
+      </Location>
+      <Size>
+        <Width>0</Width>
+        <Height>0</Height>
+      </Size>
+      <Maximized>false</Maximized>
+    </FormState>
+  </FormStates>
+</UserConfig>

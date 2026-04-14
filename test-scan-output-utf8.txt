@@ -1,0 +1,110 @@
+﻿Triggering hardware scan...
+[SCANNER] Executing Headless WIA Scan: powershell.exe -ExecutionPolicy Bypass -NoProfile -File "E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\server\services\wiaScan.ps1" -OutputPath "E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\scans\scan-15695020-8542-4cef-9c41-37b3ed9512ac.jpg"
+[SCANNER VERBOSE] Connecting to scanner: EPSON L4360 Series
+Scanning...
+Success
+
+[SCANNER] Headless WIA Scan Complete. Saved to E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\scans\scan-15695020-8542-4cef-9c41-37b3ed9512ac.jpg
+Scan path: E:\SELF SERVICE PRINTING MACHINE\employee-self-service-kiosk\scans\scan-15695020-8542-4cef-9c41-37b3ed9512ac.jpg
+Processing via fileService...
+[FILE SERVICE] Jimp parsing failed, falling back to raw buffer. Warning: PDF rendering might fail if not strict PNG/JPG.
+node : Error 
+processing file: 
+Error: SOI not found 
+in JPEG
+At line:1 char:1
++ node test-scan.js > 
+test-scan-output.txt 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (Error process   
+ in...t found in JP    
+EG:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+    at JpegEmbedder.<an
+onymous> (E:\SELF 
+SERVICE PRINTING MACHIN
+E\employee-self-service
+-kiosk\node_modules\pdf
+-lib\cjs\core\embedders
+\JpegEmbedder.js:43:27)
+    at step (E:\SELF 
+SERVICE PRINTING MACHIN
+E\employee-self-service
+-kiosk\node_modules\tsl
+ib\tslib.js:141:27)
+    at Object.next 
+(E:\SELF SERVICE 
+PRINTING MACHINE\employ
+ee-self-service-kiosk\n
+ode_modules\tslib\tslib
+.js:122:57)
+    at E:\SELF SERVICE 
+PRINTING MACHINE\employ
+ee-self-service-kiosk\n
+ode_modules\tslib\tslib
+.js:115:75
+    at new Promise 
+(<anonymous>)
+    at 
+Object.__awaiter 
+(E:\SELF SERVICE 
+PRINTING MACHINE\employ
+ee-self-service-kiosk\n
+ode_modules\tslib\tslib
+.js:111:16)
+    at 
+JpegEmbedder.for 
+(E:\SELF SERVICE 
+PRINTING MACHINE\employ
+ee-self-service-kiosk\n
+ode_modules\pdf-lib\cjs
+\core\embedders\JpegEmb
+edder.js:37:24)
+    at PDFDocument.<ano
+nymous> (E:\SELF 
+SERVICE PRINTING MACHIN
+E\employee-self-service
+-kiosk\node_modules\pdf
+-lib\cjs\api\PDFDocumen
+t.js:960:69)
+    at step (E:\SELF 
+SERVICE PRINTING MACHIN
+E\employee-self-service
+-kiosk\node_modules\tsl
+ib\tslib.js:141:27)
+    at Object.next 
+(E:\SELF SERVICE 
+PRINTING MACHINE\employ
+ee-self-service-kiosk\n
+ode_modules\tslib\tslib
+.js:122:57)
+Test Failed: Error: 
+Could not process file 
+(corrupted or 
+unsupported)
+    at 
+exports.processFile 
+(E:\SELF SERVICE 
+PRINTING MACHINE\employ
+ee-self-service-kiosk\s
+erver\services\fileServ
+ice.js:98:15)
+    at process.processT
+icksAndRejections (node
+:internal/process/task_
+queues:103:5)
+    at async 
+testHeadless (E:\SELF 
+SERVICE PRINTING MACHIN
+E\employee-self-service
+-kiosk\test-scan.js:14:
+44)

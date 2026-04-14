@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Document - Kiosk</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* overflow: hidden; Removed for responsiveness */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-8">
+
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 relative">
+        
+        <!-- Left: File Details -->
+        <div class="flex flex-col justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Document Preview</h1>
+                
+                <div class="space-y-4">
+                    <div class="bg-blue-50 p-4 rounded-lg">
+                        <label class="block text-sm font-semibold text-blue-600 mb-1">Filename</label>
+                        <div id="filename" class="text-xl font-medium text-gray-800 truncate">Loading...</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label class="block text-sm font-semibold text-gray-500 mb-1">Pages</label>
+                            <div id="page-count" class="text-2xl font-bold text-gray-800">-</div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label class="block text-sm font-semibold text-gray-500 mb-1">Color Mode</label>
+                            <div id="color-mode-display" class="text-2xl font-bold text-gray-800">B&W</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-4 rounded-lg border-2 border-green-100">
+                        <label class="block text-sm font-semibold text-green-600 mb-1">Total Cost</label>
+                        <div id="total-cost" class="text-4xl font-bold text-green-700">₹ 0.00</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 flex space-x-4">
+                <button onclick="window.location.href='/'" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 rounded-xl text-xl transition transform hover:scale-105">
+                    Cancel
+                </button>
+                <button id="print-native-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-xl shadow-lg transition transform hover:scale-105">
+                    Print Document
+                </button>
+            </div>
+        </div>
+
+        <!-- Right: Preview (Placeholder for PDF viewer) -->
+        <div class="bg-gray-100 rounded-xl flex items-center justify-center border-2 border-dashed border-gray-300 relative overflow-hidden h-[600px]">
+            <div class="text-center p-8">
+                <svg class="w-24 h-24 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <p class="text-gray-500 text-lg">PDF Preview</p>
+                <p class="text-gray-400 text-sm">(Browser PDF viewer integration pending)</p>
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionToken = urlParams.get('session');
+        
+        let currentDoc = null;
+        let printOptions = {
+            copies: 1,
+            color: false, // false = bw, true = color
+            duplex: true,
+            range: ''
+        };
+
+        const PRICES = {
+            bw: 5,
+            color: 15
+        };
+
+        async function loadConfig() {
+            try {
+                const response = await fetch('/api/config');
+                const config = await response.json();
+                PRICES.bw = parseFloat(config.price_bw);
+                PRICES.color = parseFloat(config.price_color);
+                
+                // Update UI buttons with new prices
+                document.getElementById('mode-bw').textContent = `B&W (₹${PRICES.bw})`;
+                document.getElementById('mode-color').textContent = `Color (₹${PRICES.color})`;
+            } catch (e) {
+                console.error('Error loading config:', e);
+            }
+        }
+
+        async function loadPreview() {
+            await loadConfig();
+            
+            if (!sessionToken) {
+                alert('Session Invalid');
+                window.location.href = '/';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/session/${sessionToken}/status`);
+                const data = await response.json();
+                
+                if (data.documents && data.documents.length > 0) {
+                    currentDoc = data.documents[0]; // Assuming single file for now
+                    
+                    document.getElementById('filename').textContent = currentDoc.filename;
+                    document.getElementById('page-count').textContent = currentDoc.page_count;
+                    
+                    updateCost();
+                    
+                    // Setup Native Print Button
+                    document.getElementById('print-native-btn').onclick = () => {
+                        const fileUrl = `/api/file/${currentDoc.filename}?session=${sessionToken}`;
+                        
+                        // Create a hidden iframe specifically for printing to avoid Chromium DOM blocking
+                        const printFrame = document.createElement('iframe');
+                        printFrame.style.display = 'none';
+                        printFrame.src = fileUrl;
+                        
+                        document.body.appendChild(printFrame);
+                        
+                        printFrame.onload = () => {
+                            setTimeout(() => {
+                                printFrame.contentWindow.focus();
+                                printFrame.contentWindow.print();
+                                
+                                // Clean up and redirect after print dialog
+                                printFrame.contentWindow.onafterprint = () => {
+                                    document.body.removeChild(printFrame);
+                                    window.location.href = '/';
+                                };
+                            }, 500); // Give the browser PDF renderer time to instantiate
+                        };
+                    };
+
+                    // Update Visual Preview using standard Embed
+                    const fileUrl = `/api/file/${currentDoc.filename}?session=${sessionToken}#toolbar=0`;
+                    const previewContainer = document.querySelector('.bg-gray-100.rounded-xl'); 
+                    
+                    previewContainer.innerHTML = `
+                        <embed src="${fileUrl}" type="application/pdf" width="100%" height="100%" class="rounded-xl border-0">
+                    `;
+
+                    // Check for Auto-Print Flag (Direct Scan to Print Flow)
+                    const autoPrint = urlParams.get('autoprint');
+                    if (autoPrint === 'true') {
+                        // Show an overlay while sending to print
+                        const overlay = document.createElement('div');
+                        overlay.className = 'fixed inset-0 bg-black bg-opacity-75 z-50 flex flex-col items-center justify-center text-white';
+                        overlay.innerHTML = `
+                            <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-white mb-6"></div>
+                            <h2 class="text-3xl font-bold mb-2">Sending straight to printer!</h2>
+                            <p class="text-gray-300">Opening print dialog...</p>
+                        `;
+                        document.body.appendChild(overlay);
+
+                        // Trigger the native print button logic automatically
+                        document.getElementById('print-native-btn').click();
+                    }
+
+                } else {
+                    alert('No document found');
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Error loading preview:', error);
+                alert('Error loading preview');
+            }
+        }
+
+        function updateCost() {
+            if (!currentDoc) return;
+            // Native print dialog handles cost evaluation if needed, or we just display the price list in preview.
+            // For now, we clear the reactive cost since native OS dialog determines actual pages and copies printed.
+            document.getElementById('total-cost').innerHTML = `<span class="text-sm border-b">View in Dialog</span>`;
+        }
+
+        window.onload = loadPreview;
+    </script>
+</body>
+</html>

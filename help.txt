@@ -1,0 +1,176 @@
+
+STDERR:
+NAPS2.Console 8.2.1+ff150dbe254988a12f4cadf23063dc85c5d60cbb
+Copyright 2009-2024 NAPS2 Contributors
+
+  -o, --output               The name and path of the file to save. The
+                             extension determines the output type (e.g. .pdf for
+                             a PDF file, .jpg for a JPEG). Placeholders can be
+                             used (e.g. $(YYYY)-$(MM)-$(DD) for the date,
+                             $(hh)_$(mm)_$(ss) for the time, $(nnnn) for an
+                             auto-incrementing number).
+
+  -a, --autosave             Use the Auto Save settings from the selected
+                             profile. Only works if the profile has Auto Save
+                             enabled.
+
+  --install                  Use this option to download and install optional
+                             components (e.g. "ocr-eng", "generic-import").
+
+  -i, --import               The name and path of one or more pdf/image files to
+                             import. Imported files are prepended to the output
+                             in the order they are specified. Multiple files are
+                             separated by a semicolon (";"). Slice notation can
+                             be used to only import some pages (e.g. "[0]" for
+                             the first page or "[:2]" for the first two pages).
+
+  --importpassword           The password to use to import one or more encrypted
+                             PDF files.
+
+  --progress                 Display a graphical window for scanning progress.
+
+  -v, --verbose              Display progress information in the console. If not
+                             specified, no output is displayed if the scan is
+                             successful.
+
+  -n, --number               (Default: 1) The number of scans to perform.
+
+  -d, --delay                (Default: 0) The delay (in milliseconds) before
+                             each scan.
+
+  --waitscan                 Wait for user input (enter/return) before each
+                             scan.
+
+  --firstnow                 When using --delay or --waitscan in combination
+                             with multiple scans (-n), don't wait before the
+                             first scan.
+
+  -f, --force                Overwrite existing files. If not specified, any
+                             files that already exist will not be changed.
+
+  -w, --wait                 After finishing, wait for user input (enter/return)
+                             before exiting.
+
+  -p, --profile              The name of the profile to use for scanning. If not
+                             specified, the most-recently-used profile from the
+                             GUI is selected.
+
+  --noprofile                Use default profile settings instead of a GUI
+                             profile.
+
+  --driver                   Scanning driver (wia/twain/escl/sane/apple).
+
+  --device                   Scanning device name (can be inexact).
+
+  --listdevices              Instead of scanning, list available devices.
+
+  --source                   The paper source (glass/feeder/duplex) to use when
+                             scanning.
+
+  --pagesize                 The page size to use when scanning. Either a
+                             well-known size ("letter", "legal", "a4", etc.) or
+                             a dimension (e.g. "8.5x11in").
+
+  --dpi                      The resolution (dots per inch) to use when
+                             scanning.
+
+  --bitdepth                 The bit depth (color/gray/bw) to use when scanning.
+
+  --deskew                   Automatically deskew scanned pages.
+
+  --rotate                   Rotates pages clockwise by the specified number of
+                             degrees.
+
+  --interleave               Interleave pages before saving.
+
+  --altinterleave            Alternate Interleave pages before saving.
+
+  --deinterleave             Deinterleave pages before saving.
+
+  --altdeinterleave          Alternate Deinterleave pages before saving.
+
+  --reverse                  Reverse pages before saving.
+
+  --split                    Split the pages into individual PDF/TIFF files.
+
+  --splitscans               Split the pages into multiple PDF/TIFF files, one
+                             for each scan.
+
+  --splitpatcht              Split the pages into multiple PDF/TIFF files,
+                             separating by Patch-T.
+
+  --splitsize                Split the pages into multiple PDF/TIFF files with
+                             the given number of pages per file.
+
+  --pdftitle                 The title for generated PDF metadata.
+
+  --pdfauthor                The author for generated PDF metadata.
+
+  --pdfsubject               The subject for generated PDF metadata.
+
+  --pdfkeywords              The keywords for generated PDF metadata.
+
+  --usesavedmetadata         Use the metadata (title, author, subject, keywords)
+                             configured in the GUI, if any, for the generated
+                             PDF.
+
+  --encryptconfig            The name and path of an XML file to configure
+                             encryption for the generated PDF.
+
+  --usesavedencryptconfig    Use the encryption configured in the GUI, if any,
+                             for the generated PDF.
+
+  --pdfcompat                The standard to use for the generated PDF. Possible
+                             values: default, A1-b, A2-b, A3-b, A3-u
+
+  --enableocr                Enable OCR for generated PDFs.
+
+  --disableocr               Disable OCR for generated PDFs. Overrides
+                             --enableocr.
+
+  --ocrlang                  The three-letter code for the language used for OCR
+                             (e.g. 'eng' for English, 'fra' for French, etc.).
+                             Implies --enableocr.
+
+  -e, --email                The name of the file to attach to an email. The
+                             extension determines the output type (e.g. .pdf for
+                             a PDF file, .jpg for a JPEG).
+
+  --subject                  The email message's subject. Requires -e/--email.
+
+  --body                     The email message's body text. Requires -e/--email.
+
+  --to                       A comma-separated list of email addresses of the
+                             recipients. Requires -e/--email.
+
+  --cc                       A comma-separated list of email addresses of the
+                             recipients. Requires -e/--email.
+
+  --bcc                      A comma-separated list of email addresses of the
+                             recipients. Requires -e/--email.
+
+  --autosend                 Actually send the email immediately after scanning
+                             completes without prompting the user for changes.
+                             However, this may prompt the user to login. To
+                             avoid that, use --silentsend. Note that Outlook may
+                             still require user interaction to send an email,
+                             regardless of --autosend or --silentsend options.
+                             Requires -e/--email.
+
+  --silentsend               Doesn't prompt the user to login when --autosend is
+                             specified. This may result in failure if
+                             authentication is required. Note that Outlook may
+                             still require user interaction to send an email,
+                             regardless of --autosend or --silentsend options.
+                             Requires --autosend.
+
+  --jpegquality              (Default: 75) The quality of saved JPEG files
+                             (0-100, default 75).
+
+  --tiffcomp                 The compression to use for TIFF files. Possible
+                             values: auto, lzw, ccitt4, none
+
+  --help                     Display this help screen.
+
+  --version                  Display version information.
+

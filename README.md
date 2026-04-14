@@ -1,16 +1,84 @@
-https://xd.adobe.com/view/d703546b-2df2-4da4-9e34-2ff630f181d3-8250/ 
+# Self-Service Printing Kiosk
 
-A self-service kiosk app written in vanilla JavaScript for employees to print out statements.
+A modern, secure, and user-friendly self-service printing kiosk application. Built with Node.js, Express, and SQLite, featuring mobile uploads via QR code, document preview, and an admin dashboard.
 
-To demo:
---------------
-Username: user  
-Password: pass
---------------
-<-- Remember to run `npm i` for CSS reset -->
+![Kiosk Preview](https://via.placeholder.com/800x400?text=Kiosk+Home+Screen)
 
-Some features:
-- Limit on unsuccessful login attempts
-- Dual language custom touch keyboard
-- Designed according to specifications
-- Auto log-out timer
+## Features
+
+- **User Interface**:
+  - Upload files directly from the kiosk.
+  - **Mobile Upload**: Scan a QR code to upload files from your phone instantly.
+  - **Quick Print**: Access pre-uploaded standard forms for immediate printing.
+  - **Document Preview**: Verify your document before printing.
+  - **Secure Session**: Each user gets a unique, temporary session.
+
+- **Admin Dashboard**:
+  - **Statistics**: Track revenue, total prints, and success rates.
+  - **Printer Management**: View connected printers (Mock/IPP).
+  - **Pricing Config**: Set prices for B&W and Color prints.
+  - **Prepared Files**: Upload and manage standard forms for "Quick Print".
+  - **Secure Login**: Token-based authentication (Default: admin/admin).
+
+- **Technical**:
+  - **Backend**: Node.js + Express.
+  - **Database**: SQLite (Zero configuration).
+  - **File Support**: PDF, JPG, PNG (Images auto-converted to PDF).
+  - **Remote Access**: Integrated `localtunnel` for public mobile access.
+
+## Installation
+
+1.  **Clone the Repository**:
+
+    ```bash
+    git clone <repository-url>
+    cd employee-self-service-kiosk
+    ```
+
+2.  **Install Dependencies**:
+
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**:
+    - Create a `.env` file (optional, defaults provided):
+      ```env
+      PORT=3000
+      SESSION_SECRET=your_secret_key
+      ADMIN_PASSWORD=admin
+      ENABLE_TUNNEL=true
+      ```
+
+## Usage
+
+1.  **Start the Server**:
+
+    ```bash
+    npm run dev
+    ```
+
+    - The server will start at `http://localhost:3000`.
+    - If `ENABLE_TUNNEL=true`, a public URL will be generated for mobile access.
+
+2.  **Access points**:
+    - **Kiosk Interface**: `http://localhost:3000`
+    - **Admin Panel**: `http://localhost:3000/admin` (Login: `admin` / `admin`)
+
+3.  **Printing**:
+    - This system uses a **Mock Printer** by default for development.
+    - Check the server console logs to see "Printing..." messages.
+
+## Project Structure
+
+- `server/`: Backend logic (Controllers, Models, Routes).
+- `client/`: Frontend static files (HTML, CSS, JS).
+- `uploads/`: Temporary storage for uploaded documents.
+- `database/`: SQLite database file (`kiosk.sqlite`).
+
+## Tech Stack
+
+- **Frontend**: HTML5, TailwindCSS, Vanilla JS.
+- **Backend**: Node.js, Express.js.
+- **Database**: SQLite3.
+- **Utilities**: `pdf-lib` (PDF manipulation), `localtunnel` (Tunneling), `multer` (File upload).

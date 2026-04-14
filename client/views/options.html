@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Self-Service</title>
+    <link
+      rel="stylesheet"
+      href="./node_modules/the-new-css-reset/css/reset.css"
+    />
+    <link rel="stylesheet" href="input.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header__wrapper">
+        <div class="header__logo__wrapper">
+          <img src="icons/logo.png" alt="Golomt Logo" />
+        </div>
+        <div class="header__tray">
+          <button class="logout-button" onclick="window.location = './'">
+            <div class="header__tray__timer">
+              <span id="timer"></span> Logout
+            </div>
+          </button>
+          <div class="header__tray__user-profile">
+            <img
+              src="./icons/user.svg"
+              alt="icon"
+              style="height: 20px"
+              class="header__tray__user-profile__user-icon"
+            />
+            <div class="username">E. Norov</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="dashboard__wrapper">
+        <button class="dashboard__back-button" onclick="history.back()">
+          <img class="dashboard__back-button__arrow" src="icons/back.svg" />
+          <span class="dashboard__back-button__text">Back</span>
+        </button>
+        <div class="options__wrapper">
+          <div class="options__content">
+            <p style="font-weight: bold; font-size: 25px">
+              <strong
+                >Job Description
+                <span class="with-salary">with salary</span></strong
+              >
+            </p>
+            <p style="font-size: 15px; margin: 1em 0em">
+              Golomt Bank is one of the largest privately owned banks in
+              Mongolia. Founded on March 6 of 1995, Golomt Banck grew into the
+              leading.
+            </p>
+            <div class="options__form">
+              <p class="options__form__purpose">Purpose:</p>
+              <input
+                class="options__form__input use-keyboard-input"
+                id="purpose"
+                type="text"
+                name="purpose"
+                placeholder="Loan"
+              />
+            </div>
+            <div class="options__form">
+              <p class="options__form__purpose">Recipient:</p>
+              <input
+                class="options__form__input use-keyboard-input"
+                id="recipient"
+                type="text"
+                name="options"
+                placeholder="Please write the recipient."
+              />
+            </div>
+            <div class="options__button__wrapper">
+              <button
+                class="options__button"
+                onclick="window.location = './print.html'"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="dashboard__back-button--hidden"></div>
+      </div>
+    </main>
+    <script async defer>
+      const button = document.querySelector(".options__button");
+      const withSalary = document.querySelector(".with-salary");
+
+      //Timer
+      const timerDisplay = document.querySelector("#timer");
+      const logTime = parseInt(sessionStorage.getItem("timer"));
+      const logMinutes = Math.floor(logTime / 60);
+      let logSeconds = logTime % 60;
+      logSeconds = logSeconds < 10 ? "0" + logSeconds : logSeconds;
+      timerDisplay.innerHTML = `${logMinutes}:${logSeconds}`;
+
+      if (sessionStorage.getItem("withSalary") == "false")
+        withSalary.textContent = "without salary";
+
+      button.addEventListener("click", () => {
+        const recipient = document.querySelector("#recipient").value;
+        const purpose = document.querySelector("#purpose").value;
+        sessionStorage.setItem("recipient", recipient);
+        sessionStorage.setItem("purpose", purpose);
+      });
+
+      button.addEventListener("kepyress", (e) => {
+        if (e.key === "Enter") onclick = "window.location = './print.html'";
+      });
+    </script>
+    <script src="autoLogout.js"></script>
+    <script src="keyboard/keyboard.js"></script>
+  </body>
+</html>

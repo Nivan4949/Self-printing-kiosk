@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Kiosk</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); 
+        }
+        
+        /* Glassmorphism sidebar */
+        .glass-sidebar {
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Glassmorphism cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border-radius: 1rem;
+        }
+
+        .stat-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-link {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: #3b82f6;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+            border-radius: 0 4px 4px 0;
+        }
+        .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden">
+
+    <!-- Premium Glass Sidebar -->
+    <div class="w-64 glass-sidebar text-white flex flex-col z-20 shadow-2xl">
+        <div class="p-8 text-2xl font-bold border-b border-gray-800 tracking-tight flex items-center">
+            <svg class="w-8 h-8 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            NIVAN <span class="text-blue-500 font-normal ml-1">OS</span>
+        </div>
+        <nav class="flex-1 p-4 space-y-1">
+            <button onclick="showSection('dashboard')" id="nav-dashboard" class="nav-link active w-full text-left flex items-center py-3 px-4 rounded-lg bg-gray-800/50 text-blue-100 font-medium">
+                <svg class="w-5 h-5 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                Dashboard
+            </button>
+            <button onclick="showSection('quick-print')" id="nav-quick-print" class="nav-link w-full text-left flex items-center py-3 px-4 rounded-lg hover:bg-gray-800/50 text-gray-300 font-medium">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                Quick Print
+            </button>
+            <button onclick="showSection('pricing')" id="nav-pricing" class="nav-link w-full text-left flex items-center py-3 px-4 rounded-lg hover:bg-gray-800/50 text-gray-300 font-medium">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Pricing
+            </button>
+            <button onclick="showSection('security')" id="nav-security" class="nav-link w-full text-left flex items-center py-3 px-4 rounded-lg hover:bg-gray-800/50 text-gray-300 font-medium">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                Security
+            </button>
+        </nav>
+        <div class="p-6 border-t border-gray-800">
+            <button onclick="logout()" class="w-full flex items-center justify-center bg-gray-800 hover:bg-red-600/90 text-gray-300 hover:text-white py-2.5 rounded-lg transition duration-200 shadow-md border border-gray-700 hover:border-red-500">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                Disconnect
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        
+        <!-- Header -->
+        <header class="bg-white shadow p-4 flex justify-between items-center z-10">
+            <h2 class="text-xl font-semibold text-gray-800" id="header-title">Dashboard Overview</h2>
+            <div class="text-gray-600">Welcome, <span id="admin-user" class="font-bold">Admin</span></div>
+        </header>
+
+        <!-- Scrollable Content -->
+        <main class="flex-1 overflow-x-hidden overflow-y-auto p-8 relative z-10">
+            
+            <!-- SECTION: Dashboard (Stats + Recent Jobs) -->
+            <div id="section-dashboard" class="space-y-8 animate-fade-in max-w-7xl mx-auto">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="glass-card stat-card p-6 border-t-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div class="text-gray-500 text-sm font-bold uppercase tracking-wider">Total Revenue</div>
+                            <div class="p-2 bg-green-100 rounded-lg"><svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        </div>
+                        <div class="text-3xl font-bold text-gray-900 mt-4" id="stat-revenue">₹ 0</div>
+                    </div>
+                    <div class="glass-card stat-card p-6 border-t-4 border-blue-500">
+                        <div class="flex items-center justify-between">
+                            <div class="text-gray-500 text-sm font-bold uppercase tracking-wider">Prints Today</div>
+                            <div class="p-2 bg-blue-100 rounded-lg"><svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg></div>
+                        </div>
+                        <div class="text-3xl font-bold text-gray-900 mt-4" id="stat-today">0</div>
+                    </div>
+                    <div class="glass-card stat-card p-6 border-t-4 border-purple-500">
+                        <div class="flex items-center justify-between">
+                            <div class="text-gray-500 text-sm font-bold uppercase tracking-wider">Total Jobs</div>
+                            <div class="p-2 bg-purple-100 rounded-lg"><svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></div>
+                        </div>
+                        <div class="text-3xl font-bold text-gray-900 mt-4" id="stat-total">0</div>
+                    </div>
+                    <div class="glass-card stat-card p-6 border-t-4 border-red-500">
+                         <div class="flex items-center justify-between">
+                            <div class="text-gray-500 text-sm font-bold uppercase tracking-wider">Failed Jobs</div>
+                            <div class="p-2 bg-red-100 rounded-lg"><svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                        </div>
+                        <div class="text-3xl font-bold text-gray-900 mt-4" id="stat-failed">0</div>
+                    </div>
+                </div>
+
+                <!-- Recent Jobs -->
+                <div class="glass-card overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-white/50">
+                        <h3 class="text-lg font-bold text-gray-900">Recent Print Activity</h3>
+                        <button onclick="loadDashboard()" class="flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 transition bg-blue-50 hover:bg-blue-100 py-1.5 px-3 rounded-full">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Refresh Log
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
+                            <thead class="bg-gray-50/80 text-gray-500 uppercase tracking-wider text-xs font-semibold">
+                                <tr>
+                                    <th class="p-4 pl-6">Job ID</th>
+                                    <th class="p-4">Destination Printer</th>
+                                    <th class="p-4">Status</th>
+                                    <th class="p-4 pr-6">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jobs-table-body" class="divide-y divide-gray-100 bg-white/40">
+                                <tr><td colspan="4" class="p-8 text-center text-gray-400 font-medium">Loading network logs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Quick Print (Prepared Files) -->
+            <div id="section-quick-print" class="hidden space-y-8 animate-fade-in max-w-7xl mx-auto">
+                <div class="glass-card overflow-hidden">
+                    <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-white/50">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Prepared Files Base</h3>
+                            <p class="text-gray-500 text-sm mt-1">Upload standard company forms to the kiosk's internal drive.</p>
+                        </div>
+                        <div>
+                            <button onclick="document.getElementById('file-upload-input').click()" class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-medium py-2.5 px-6 rounded-lg transition shadow-lg shadow-blue-500/30 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                                Upload to Kiosk
+                            </button>
+                            <input type="file" id="file-upload-input" class="hidden" accept="application/pdf,image/png,image/jpeg" onchange="uploadPreparedFile(this)">
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-gray-50/80 text-gray-500 uppercase tracking-wider text-xs font-semibold">
+                                <tr>
+                                    <th class="p-4 pl-8">Document Name</th>
+                                    <th class="p-4 text-center">Sheets</th>
+                                    <th class="p-4">Upload Date</th>
+                                    <th class="p-4 pr-8 text-right">Sys Admin</th>
+                                </tr>
+                            </thead>
+                            <tbody id="prepared-files-body" class="divide-y divide-gray-100 bg-white/40">
+                                <tr><td colspan="4" class="p-8 text-center text-gray-400 font-medium">Scanning drive...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Pricing -->
+            <div id="section-pricing" class="hidden space-y-8 animate-fade-in max-w-3xl mx-auto mt-4">
+                <div class="glass-card overflow-hidden">
+                    <div class="bg-gradient-to-r from-gray-900 to-gray-800 p-8 text-white relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
+                            <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold flex items-center relative z-10">
+                            Billing Engine Rules
+                        </h3>
+                        <p class="text-gray-400 mt-2 relative z-10">Configure hardware cost-per-impression parameters globally across the network.</p>
+                    </div>
+                    <div class="p-8 bg-white/60">
+                        <form id="config-form" class="space-y-8">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 flex-1">
+                                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Monochrome Price</label>
+                                    <div class="relative mt-2">
+                                        <span class="absolute left-4 top-3.5 text-gray-500 font-medium">₹</span>
+                                        <input type="number" id="price-bw" class="w-full pl-9 border-0 bg-gray-50 rounded-lg p-3.5 focus:ring-2 focus:ring-blue-500 outline-none transition text-lg font-semibold" step="0.5" placeholder="0.00">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-3 flex items-center"><svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Cost deducted per printed face</p>
+                                </div>
+                                <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                                    <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">CMYK Price</label>
+                                    <div class="relative mt-2">
+                                        <span class="absolute left-4 top-3.5 text-gray-500 font-medium">₹</span>
+                                        <input type="number" id="price-color" class="w-full pl-9 border-0 bg-gray-50 rounded-lg p-3.5 focus:ring-2 focus:ring-blue-500 outline-none transition text-lg font-semibold text-blue-600" step="0.5" placeholder="0.00">
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-3 flex items-center"><svg class="w-4 h-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Cost deducted per printed face</p>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="w-full bg-gray-900 text-white font-medium py-4 rounded-xl hover:bg-black transition transform hover:scale-[1.01] shadow-xl shadow-gray-900/20 text-lg flex justify-center items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    Commit Core Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: Security -->
+            <div id="section-security" class="hidden space-y-8 animate-fade-in max-w-3xl mx-auto mt-4">
+                <div class="glass-card overflow-hidden border border-red-100">
+                    <div class="bg-gradient-to-r from-red-600 to-red-700 p-8 text-white relative overflow-hidden">
+                        <div class="absolute right-0 top-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
+                             <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold flex items-center relative z-10">
+                            Access Control Checkpoint
+                        </h3>
+                        <p class="text-red-100 mt-2 relative z-10">Update standard cryptographic keys securing this endpoint.</p>
+                    </div>
+                    <div class="p-8 bg-white/60">
+                         <form id="password-form" class="space-y-6">
+                            <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                                <label class="block text-sm font-bold text-gray-700 mb-3 uppercase tracking-wide">New Administrative Password</label>
+                                <input type="password" id="new-password" class="w-full border-0 bg-gray-50 rounded-lg p-4 focus:ring-2 focus:ring-red-500 outline-none transition text-lg" placeholder="Enter new network key (min. 5 characters)">
+                            </div>
+                             <div class="pt-4">
+                                <button type="submit" class="w-full bg-red-600 text-white font-medium py-4 rounded-xl hover:bg-red-700 transition transform hover:scale-[1.01] shadow-xl shadow-red-600/30 text-lg flex justify-center items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                                    Cycle Master Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('adminToken');
+        if (!token) window.location.href = '/login';
+
+        document.getElementById('admin-user').textContent = localStorage.getItem('adminUser') || 'Admin';
+
+        async function fetchWithAuth(url, options = {}) {
+            options.headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            const response = await fetch(url, options);
+            if (response.status === 401 || response.status === 403) {
+                logout();
+                return null;
+            }
+            return response.json();
+        }
+
+        async function loadDashboard() {
+            // Load Stats
+            const stats = await fetchWithAuth('/api/admin/stats');
+            if (stats) {
+                document.getElementById('stat-revenue').textContent = `₹ ${stats.revenue || 0}`;
+                document.getElementById('stat-today').textContent = stats.todayPrints;
+                document.getElementById('stat-total').textContent = stats.totalPrints;
+                document.getElementById('stat-failed').textContent = stats.failedJobs;
+            }
+
+            // Load Config
+            const config = await fetchWithAuth('/api/admin/config');
+            if (config) {
+                document.getElementById('price-bw').value = config.price_bw;
+                document.getElementById('price-color').value = config.price_color;
+            }
+
+            // Load Jobs
+            const jobs = await fetchWithAuth('/api/admin/jobs');
+            if (jobs) {
+                const tbody = document.getElementById('jobs-table-body');
+                tbody.innerHTML = jobs.map(job => `
+                    <tr>
+                        <td class="p-4">#${job.id}</td>
+                        <td class="p-4 font-medium">${job.printer_name}</td>
+                        <td class="p-4">
+                            <span class="px-2 py-1 rounded text-xs font-bold 
+                                ${job.status === 'completed' ? 'bg-green-100 text-green-700' : 
+                                  job.status === 'failed' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700'}">
+                                ${job.status.toUpperCase()}
+                            </span>
+                        </td>
+                        <td class="p-4 text-gray-500">${new Date(job.timestamp).toLocaleTimeString()}</td>
+                    </tr>
+                `).join('');
+            }
+            // Load Prepared Files
+            loadPreparedFiles();
+        }
+
+        async function loadPreparedFiles() {
+            const files = await fetchWithAuth('/api/admin/prepared-files');
+            if (files) {
+                const tbody = document.getElementById('prepared-files-body');
+                if (files.length === 0) {
+                     tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-400">No prepared files yet.</td></tr>';
+                     return;
+                }
+                tbody.innerHTML = files.map(file => `
+                    <tr>
+                        <td class="p-3 font-medium">${file.filename}</td>
+                        <td class="p-3">${file.page_count}</td>
+                        <td class="p-3 text-gray-500">${new Date(file.created_at).toLocaleDateString()}</td>
+                        <td class="p-3 text-right">
+                            <button onclick="deletePreparedFile(${file.id})" class="text-red-500 hover:text-red-700 font-bold text-xs uppercase">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        async function uploadPreparedFile(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                
+                const btn = input.previousElementSibling; // The upload button
+                const originalText = btn.textContent;
+                btn.textContent = 'Uploading...';
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/admin/prepared-files', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+                        alert('File Uploaded Successfully');
+                        loadPreparedFiles();
+                    } else {
+                        const err = await response.json();
+                        alert('Upload Failed: ' + (err.error || 'Unknown error'));
+                    }
+                } catch (e) {
+                    alert('Upload Error');
+                } finally {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    input.value = ''; // Reset
+                }
+            }
+        }
+
+        async function deletePreparedFile(id) {
+            if (!confirm('Are you sure you want to delete this file? Users will no longer be able to print it.')) return;
+            
+            await fetchWithAuth(`/api/admin/prepared-files/${id}`, { method: 'DELETE' });
+            loadPreparedFiles();
+        }
+
+        document.getElementById('config-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const price_bw = document.getElementById('price-bw').value;
+            const price_color = document.getElementById('price-color').value;
+
+            await fetchWithAuth('/api/admin/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ price_bw, price_color })
+            });
+            alert('Settings Saved');
+        });
+
+        document.getElementById('password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+            
+            if (newPassword.length < 5) {
+                alert('Password must be at least 5 characters');
+                return;
+            }
+
+            const response = await fetchWithAuth('/api/admin/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ newPassword })
+            });
+            
+            if (response && response.message) {
+                alert(response.message);
+                document.getElementById('new-password').value = '';
+            } else if (response && response.error) {
+                alert('Error: ' + response.error);
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            window.location.href = '/login';
+        }
+
+        loadDashboard();
+
+        // Navigation Logic
+        function showSection(sectionId) {
+             // Hide all sections
+             ['dashboard', 'quick-print', 'pricing', 'security'].forEach(id => {
+                 document.getElementById(`section-${id}`).classList.add('hidden');
+                 const navBtn = document.getElementById(`nav-${id}`);
+                 navBtn.classList.remove('bg-gray-900', 'shadow-inner', 'border-blue-500');
+                 navBtn.classList.add('hover:bg-gray-700', 'border-transparent');
+             });
+
+             // Show selected
+             document.getElementById(`section-${sectionId}`).classList.remove('hidden');
+             
+             // Update Button State
+             const activeBtn = document.getElementById(`nav-${sectionId}`);
+             activeBtn.classList.remove('hover:bg-gray-700', 'border-transparent');
+             activeBtn.classList.add('bg-gray-900', 'shadow-inner', 'border-blue-500');
+
+             // Update Header Title
+             const titles = {
+                 'dashboard': 'Dashboard Overview',
+                 'quick-print': 'Prepared Files > Quick Print',
+                 'pricing': 'System Configuration > Pricing',
+                 'security': 'Account Settings > Security'
+             };
+             document.getElementById('header-title').textContent = titles[sectionId];
+        }
+    </script>
+</body>
+</html>

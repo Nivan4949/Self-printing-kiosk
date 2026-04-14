@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIVAN ASSOCIATES - Kiosk</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Lato', sans-serif;
+            /* Removed overflow: hidden to allow scrolling on small screens */
+        }
+        .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .qr-wrapper {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .btn-primary {
+             background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+        }
+        /* Custom Scrollbar for Quick Print List */
+        .custom-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="min-h-screen text-center p-4 relative flex flex-col">
+
+    <!-- Header -->
+    <div class="w-full max-w-7xl mx-auto flex justify-between items-center mb-8 px-4">
+        <div class="text-left">
+            <h1 class="text-2xl font-bold brand-font text-gray-900 tracking-wide">NIVAN ASSOCIATES</h1>
+            <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Professional Printing Solutions</p>
+        </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-start flex-1">
+        
+        <!-- Left Column: Intro + QR + Custom Upload -->
+        <div class="flex flex-col space-y-8 text-left h-full">
+            
+            <!-- Hero Text -->
+            <div class="space-y-4">
+                <h1 class="text-5xl font-bold text-gray-900 leading-tight brand-font">
+                    Document Printing <br>
+                    <span class="text-blue-900">Simplified.</span>
+                </h1>
+                <p class="text-lg text-gray-600 leading-relaxed max-w-lg">
+                    Upload securely from your mobile device or print standard forms instantly.
+                </p>
+            </div>
+
+            <!-- QR Code Section (Moved to Left) -->
+            <div class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 flex flex-col sm:flex-row items-center space-y-6 sm:space-y-0 sm:space-x-8">
+                
+                <div class="qr-wrapper flex-shrink-0">
+                     <div id="qr-loading" class="animate-pulse flex flex-col items-center justify-center h-48 w-48 bg-gray-100 rounded-lg">
+                        <span class="text-gray-400 text-sm">Generating QR...</span>
+                    </div>
+                    <img id="qr-code" src="" alt="Scan to Upload" class="hidden w-48 h-48">
+                </div>
+
+                <div class="flex-1 space-y-4 text-center sm:text-left">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Scan to Upload</h3>
+                        <p class="text-sm text-gray-500">Use your phone camera to upload PDF/Images.</p>
+                    </div>
+                    
+                    <button onclick="uploadFromDevice()" class="w-full btn-primary hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-xl shadow-md transition transform hover:scale-105 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        Upload Custom File
+                    </button>
+
+                    <button onclick="triggerScan()" class="w-full bg-white border-2 border-blue-600 text-blue-700 hover:bg-blue-50 font-bold py-3 px-6 rounded-xl shadow-sm transition transform hover:scale-105 flex items-center justify-center">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                        Print Document from Machine
+                    </button>
+                    
+                    <div id="session-status" class="text-xs font-medium text-blue-600 animate-pulse bg-blue-50 py-1 px-3 rounded-full inline-block">
+                        Initializing Session...
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Quick Print Forms (Scrollable Panel) -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col h-[700px]"> <!-- Fixed height for consistency -->
+            
+            <div class="p-6 border-b border-gray-100 bg-gray-50 rounded-t-2xl flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                        Quick Print Forms
+                    </h2>
+                    <p class="text-sm text-gray-500 mt-1">Select a form to print instantly</p>
+                </div>
+                <div class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full">
+                    Ready
+                </div>
+            </div>
+            
+            <!-- Scrollable List Area -->
+            <div id="quick-print-list" class="flex-1 overflow-y-auto p-4 custom-scroll space-y-3 bg-gray-50 bg-opacity-50">
+                <!-- Items will be injected here via JS -->
+                <div class="text-center py-12 text-gray-400">
+                    <svg class="w-12 h-12 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    Loading forms...
+                </div>
+            </div>
+
+            <!-- Footer/Info -->
+            <div class="p-4 border-t border-gray-100 text-center text-xs text-gray-400 bg-gray-50 rounded-b-2xl">
+                Scroll to view more forms
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Hidden Modal for Loading State on Quick Print -->
+    <div id="loading-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+            <p class="text-lg font-bold text-gray-800">Preparing Document...</p>
+        </div>
+    </div>
+
+    <script>
+        let sessionToken = null;
+        let pollInterval = null;
+
+        async function initSession() {
+            try {
+                // Fetch Forms Immediately
+                loadQuickPrintFiles();
+
+                const response = await fetch('/api/session/create', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.qrCode) {
+                    sessionToken = data.sessionToken;
+                    document.getElementById('qr-code').src = data.qrCode;
+                    document.getElementById('qr-code').classList.remove('hidden');
+                    document.getElementById('qr-loading').classList.add('hidden');
+                    
+                    const statusEl = document.getElementById('session-status');
+                    statusEl.textContent = 'Ready to Scan';
+                    statusEl.classList.remove('animate-pulse');
+                    
+
+                    startPolling();
+                }
+            } catch (error) {
+                console.error('Session Init Error:', error);
+                document.getElementById('session-status').textContent = 'Connection Error. Retrying...';
+                setTimeout(initSession, 3000);
+            }
+        }
+
+        function startPolling() {
+            if (pollInterval) clearInterval(pollInterval);
+            
+            pollInterval = setInterval(async () => {
+                if (!sessionToken) return;
+
+                try {
+                    const response = await fetch(`/api/session/${sessionToken}/status`);
+                    const data = await response.json();
+                    
+                    if (data.hasUploads) {
+                        clearInterval(pollInterval);
+                        document.getElementById('session-status').textContent = 'File Received!';
+                        window.location.href = `/preview.html?session=${sessionToken}`;
+                    }
+                } catch (error) {
+                    console.error('Polling Error:', error);
+                }
+            }, 2000);
+        }
+
+        function uploadFromDevice() {
+            if (!sessionToken) {
+                alert('Session initializing. Please wait...');
+                return;
+            }
+            window.location.href = `/upload.html?session=${sessionToken}&source=kiosk`;
+        }
+        
+        // NEW: Load Quick Print Files into the Right Panel
+        async function loadQuickPrintFiles() {
+            const list = document.getElementById('quick-print-list');
+            
+            try {
+                const response = await fetch('/api/prepared-files');
+                const files = await response.json();
+                
+                if (files.length === 0) {
+                    list.innerHTML = `
+                        <div class="text-center py-12 text-gray-400">
+                            <p>No forms available.</p>
+                        </div>`;
+                    return;
+                }
+                
+                list.innerHTML = files.map(file => `
+                    <div onclick="selectQuickPrintFile(${file.id})" class="group bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl p-4 cursor-pointer transition-all duration-200 flex items-center space-x-4 shadow-sm hover:shadow-md transform hover:-translate-y-1">
+                        <div class="bg-blue-50 p-3 rounded-lg text-blue-600 group-hover:bg-blue-100 transition-colors">
+                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-gray-800 text-md line-clamp-1 group-hover:text-blue-800 transition-colors">${file.filename}</h4>
+                            <div class="flex items-center space-x-2 mt-1">
+                                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">${file.page_count} Pgs</span>
+                            </div>
+                        </div>
+                         <div class="text-gray-300 group-hover:text-blue-500 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                list.innerHTML = '<div class="text-center py-8 text-red-500">Error loading forms.</div>';
+            }
+        }
+
+        async function selectQuickPrintFile(fileId) {
+            try {
+                // Show Global Loading Modal
+                document.getElementById('loading-modal').classList.remove('hidden');
+                
+                const response = await fetch('/api/session/quick-print', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ fileId })
+                });
+                
+                const result = await response.json();
+                
+                if (result.sessionToken) {
+                    // Redirect to Preview Page (acts as the "Popup" for printing)
+                    window.location.href = `/preview.html?session=${result.sessionToken}`;
+                } else {
+                    document.getElementById('loading-modal').classList.add('hidden');
+                    alert('Error starting session');
+                }
+            } catch (error) {
+                document.getElementById('loading-modal').classList.add('hidden');
+                alert('Error processing request');
+            }
+        }
+
+        let isScanning = false;
+        async function triggerScan() {
+            if (isScanning) return;
+            
+            const statusEl = document.getElementById('session-status');
+            const scanBtn = document.querySelector('button[onclick="triggerScan()"]');
+            
+            try {
+                isScanning = true;
+                
+                // Update UI state
+                scanBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                scanBtn.innerHTML = '<svg class="animate-pulse w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Scanner Working...';
+                
+                statusEl.innerHTML = 'Connecting to Scanner. Please keep the document flat.';
+                statusEl.className = 'text-sm font-bold text-blue-700 bg-blue-100 py-3 px-5 border border-blue-300 rounded-lg inline-block shadow-inner mt-4';
+                
+                // Call the unified headless endpoint
+                const res = await fetch('/api/scan/headless-print', { method: 'POST' });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    statusEl.textContent = 'Scan complete. Preparing print preview...';
+                    statusEl.className = 'text-sm font-bold text-green-700 bg-green-100 py-3 px-5 border border-green-300 rounded-xl shadow-md inline-block mt-4';
+                    
+                    // Create an invisible iframe to host the PDF for the native Print Dialog
+                    const iframe = document.createElement('iframe');
+                    iframe.style.display = 'none';
+                    iframe.src = data.url;
+                    
+                    // Wait for PDF to load then trigger the system print dialog
+                    iframe.onload = function() {
+                        statusEl.textContent = 'Please confirm the print dialog.';
+                        setTimeout(() => {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+                            // Clean up after print dialog closes
+                            setTimeout(() => document.body.removeChild(iframe), 60000);
+                        }, 500); // Small UI buffer
+                    };
+                    
+                    document.body.appendChild(iframe);
+                    resetScanButton();
+                    
+                    setTimeout(() => {
+                        statusEl.innerHTML = '';
+                        statusEl.className = '';
+                    }, 8000);
+                } else {
+                    throw new Error(data.error || 'Server error during scan & print');
+                }
+
+            } catch (error) {
+                console.error('Scan Error:', error);
+                statusEl.textContent = 'Hardware Error: ' + error.message;
+                statusEl.className = 'text-sm font-bold text-red-700 bg-red-100 py-2 px-4 border border-red-300 rounded-full inline-block mt-2';
+                isScanning = false;
+                resetScanButton();
+            }
+        }
+
+        function resetScanButton() {
+            setTimeout(() => {
+                const scanBtn = document.querySelector('button[onclick="triggerScan()"]');
+                if (scanBtn) {
+                    scanBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    scanBtn.innerHTML = '<svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg> Print Document from Machine';
+                }
+            }, 3000);
+        }
+
+        window.onload = () => {
+            initSession();
+        };
+    </script>
+</body>
+</html>

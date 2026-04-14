@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .upload-area {
+            border: 2px dashed #3b82f6;
+            background-color: #eff6ff;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            background-color: #dbeafe;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-2">Upload Document</h1>
+        <p class="text-gray-600 mb-6">Select a PDF file to print at the kiosk.</p>
+
+        <div id="upload-status" class="hidden mb-4 p-3 rounded text-sm font-semibold"></div>
+
+        <form id="upload-form" class="space-y-4">
+            <input type="hidden" id="session-token" name="sessionToken">
+            
+            <div class="upload-area rounded-lg p-8 cursor-pointer" onclick="document.getElementById('file-input').click()">
+                <svg class="w-12 h-12 text-blue-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <span class="text-blue-600 font-medium">Click to Select File</span>
+                <p class="text-xs text-gray-400 mt-1">PDF, JPG, PNG (Max 20MB)</p>
+            </div>
+            
+            <input type="file" id="file-input" name="file" accept="application/pdf,image/png,image/jpeg,image/jpg" class="hidden" onchange="handleFileSelect(this)">
+            
+            <div id="file-name" class="text-gray-700 font-medium hidden"></div>
+
+            <button type="submit" id="submit-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow transition duration-200 disabled:opacity-50" disabled>
+                Upload & Print
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Get session token from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionToken = urlParams.get('session');
+        
+        if (!sessionToken) {
+            document.body.innerHTML = '<div class="text-center p-4 text-red-600 font-bold">Invalid Session. Please scan the QR code again.</div>';
+        } else {
+            document.getElementById('session-token').value = sessionToken;
+        }
+
+        function handleFileSelect(input) {
+            const fileNameDiv = document.getElementById('file-name');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+                
+                if (!allowedTypes.includes(file.type)) {
+                    alert('Only PDF, JPG, and PNG files are allowed.');
+                    input.value = '';
+                    return;
+                }
+                if (file.size > 20 * 1024 * 1024) {
+                    alert('File size exceeds 20MB.');
+                    input.value = '';
+                    return;
+                }
+
+                fileNameDiv.textContent = `Selected: ${file.name}`;
+                fileNameDiv.classList.remove('hidden');
+                submitBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = document.getElementById('submit-btn');
+            const statusDiv = document.getElementById('upload-status');
+            const formData = new FormData(e.target);
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: {
+                        'x-session-token': sessionToken
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    statusDiv.classList.remove('hidden', 'bg-red-100', 'text-red-700');
+                    statusDiv.classList.add('bg-green-100', 'text-green-700');
+                    
+                    document.getElementById('upload-form').classList.add('hidden');
+
+                    // Check if uploaded from Kiosk directly
+                    const source = urlParams.get('source');
+                    if (source === 'kiosk') {
+                        statusDiv.textContent = 'Upload Successful! Redirecting...';
+                        setTimeout(() => {
+                            window.location.href = `/preview.html?session=${sessionToken}`;
+                        }, 1000);
+                    } else {
+                        statusDiv.innerHTML = `
+                            <div class="flex flex-col items-center py-4">
+                                <svg class="w-16 h-16 text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="font-bold text-2xl text-gray-800">Upload Successful!</span>
+                                <p class="text-center mt-4 text-lg text-gray-600">Please look at the <br><strong class="text-blue-600">Kiosk Screen</strong> to continue.</p>
+                            </div>
+                        `;
+                    }
+
+                } else {
+                    throw new Error(result.error || 'Upload failed');
+                }
+            } catch (error) {
+                statusDiv.className = 'mb-4 p-3 rounded text-sm font-semibold bg-red-100 text-red-700';
+                statusDiv.textContent = error.message;
+                statusDiv.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Upload & Print';
+            }
+        });
+    </script>
+</body>
+</html>

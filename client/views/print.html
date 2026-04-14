@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Self-Service</title>
+    <link
+      rel="stylesheet"
+      href="./node_modules/the-new-css-reset/css/reset.css"
+    />
+    <link rel="stylesheet" href="input.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header__wrapper">
+        <div class="header__logo__wrapper">
+          <img src="icons/logo.png" alt="Golomt Logo" />
+        </div>
+        <div class="header__tray">
+          <button class="logout-button" onclick="window.location = './'">
+            <div class="header__tray__timer">
+              <span id="timer"></span> Logout
+            </div>
+          </button>
+          <div class="header__tray__user-profile">
+            <img
+              src="./icons/user.svg"
+              alt="icon"
+              style="height: 20px"
+              class="header__tray__user-profile__user-icon"
+            />
+            <div class="username">E. Norov</div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main>
+      <div class="dashboard__wrapper">
+        <button class="dashboard__back-button" onclick="history.back()">
+          <img class="dashboard__back-button__arrow" src="icons/back.svg" />
+          <span class="dashboard__back-button__text">Back</span>
+        </button>
+        <div class="print__wrapper">
+          <div class="print__page">
+            <div class="container">
+              <div class="container__cont">
+                <div class="head__logo">
+                  <img src="icons/logo.png" alt="logo" />
+                </div>
+                <p>Голомт банкны Төв байр, Д.Сүхбаатар талбай 5,</p>
+                <p>Ш/х 22, Улаанбаатар 15160, Монгол улс</p>
+                <p>Утас: 1111-1111, 1111-1111, Факс: 11-111111</p>
+                <p>И-мэйл: mail@golomtbank.com,</p>
+                <p>Вэб: www.golomtbank.com</p>
+                <div style="text-align: center; margin: 1em">
+                  _________№__________
+                </div>
+                <h1>
+                  <span class="recipient"
+                    >СОНГИНОХАЙРХАН ДҮҮРГИЙН ЗАСАГ ДАРГЫН ЦЭРГИЙН ШТАБ </span
+                  >-д
+                </h1>
+                <div style="text-align: justify">
+                  &nbsp; &nbsp; &nbsp; &nbsp;<span
+                    >Баасанжаргал овогтой Ачгэрэл</span
+                  >
+                  нь Голомт банкны СТТ-10-р хороолол салбарт Харилцааны менежер
+                  ажилтай бөгөөд тус банкинд 2020 оны 09 сарын 16-ны өдрөөс
+                  эхлэн ажиллаж байгаа нь үнэн болно.
+                  <span class="salary"> Цалин: 2,500,000₮.</span>
+                </div>
+                <div class="container__cont__dirMN">
+                  <div style="width: 300px; text-align: end">
+                    ХҮНИЙ НӨӨЦИЙН УДИРДЛАГЫН ГАЗРЫН ЗАХИРАЛ
+                  </div>
+                  <span style="width: 150px"></span>
+                  <div style="align-self: flex-end">N.Surname</div>
+                </div>
+              </div>
+              <div class="container__cont">
+                <div class="head__logo">
+                  <img src="icons/logo.png" alt="logo" />
+                </div>
+                <p>Head Office of Golomt bank, D.Sukhbaatar Square 5,</p>
+                <p>P.O.Box 22, Ulaanbaatar 15160, Mongolia</p>
+                <p>Phone:+(976)-1111-1111, 1111-1111, Fax:+(976)-11-111111</p>
+                <p>E-mail: mail@golomtbank.com, Web: www.golomtbank.com</p>
+                <div style="text-align: center; margin: 2em 1em">
+                  _________№__________
+                </div>
+                <h1>
+                  To <span class="recipient">Chonnam National University </span>
+                </h1>
+                <div style="text-align: justify">
+                  &nbsp; &nbsp; &nbsp; &nbsp;This is to certify that Mr.<span
+                    >Name Surname</span
+                  >
+                  has been working as a Relationship Manager at "10-r khoroolol"
+                  Branch of Golomt Bank since September 16, 2020.<span
+                    class="salary"
+                  >
+                    Salary: 2,500,000₮.</span
+                  >
+                  <div style="text-align: justify; margin: 1em 0em">
+                    &nbsp; &nbsp; &nbsp; &nbsp; Should you have any questions or
+                    need further information, please do not hesitate to contact
+                    us.
+                  </div>
+                  <div style="text-align: justify">With best regards,</div>
+                </div>
+                <div class="container__cont__dir">
+                  <div>
+                    <div style="margin-bottom: 1em">N. Surname</div>
+                    <div>Director</div>
+                    <span style="width: 150px"></span>
+                    <div>Human Resource Management Division</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="print__hide-button">
+            <img src="icons/show.svg" id="hide-icon" alt="hide icon" />
+          </div>
+          <div class="print__button">
+            <button>Print</button>
+          </div>
+        </div>
+        <div class="dashboard__back-button--hidden"></div>
+      </div>
+    </main>
+    <script async defer>
+      const recipient = document.querySelectorAll(".recipient");
+      const hideButton = document.querySelector(".print__hide-button");
+      const salaryFields = document.querySelectorAll(".salary");
+      const hideIcon = document.querySelector("#hide-icon");
+      const hideBUtton = document.querySelector(".print__hide-button");
+      const printButton = document.querySelector(".print__button");
+
+      //Timer
+      const timerDisplay = document.querySelector("#timer");
+      const logTime = parseInt(sessionStorage.getItem("timer"));
+      const logMinutes = Math.floor(logTime / 60);
+      let logSeconds = logTime % 60;
+      logSeconds = logSeconds < 10 ? "0" + logSeconds : logSeconds;
+      timerDisplay.innerHTML = `${logMinutes}:${logSeconds}`;
+
+      let hide = true;
+
+      if (sessionStorage.getItem("withSalary") == "false") {
+        salaryFields.forEach((e) => (e.style.visibility = "hidden"));
+        hideButton.style.visibility = "hidden";
+      }
+
+      recipient.forEach((e) => {
+        e.innerText = sessionStorage.getItem("recipient");
+      });
+
+      hideButton.addEventListener("click", () => {
+        hide = !hide;
+        if (hide) {
+          hideIcon.src = "icons/show.svg";
+        } else hideIcon.src = "icons/hide.svg";
+        salaryFields.forEach((field) =>
+          field.classList.toggle("print--show-salary")
+        );
+      });
+
+      printButton.addEventListener("click", () => {
+        window.print();
+      });
+    </script>
+    <script src="autoLogout.js"></script>
+  </body>
+</html>
