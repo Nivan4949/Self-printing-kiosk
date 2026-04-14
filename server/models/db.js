@@ -23,14 +23,42 @@ if (!isVercel) {
     }
 }
 
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) {
-        console.error('Error opening database', err.message);
+let db;
+
+try {
+    const sqlite3 = require('sqlite3').verbose();
+    db = new sqlite3.Database(dbPath, (err) => {
+        if (err) {
+            console.error('[DB ERROR] Error opening database:', err.message);
+            // On Vercel, if DB fails, we still want the server to stay alive for health checks
+            if (isVercel) {
+                console.warn('[DB] Falling back to Mock DB mode due to connection error.');
+                db = createMockDb(err.message);
+            }
+        } else {
+            console.log('Connected to the SQLite database.');
+            initSchema();
+        }
+    });
+} catch (loadErr) {
+    console.error('[DB FATAL] Failed to load sqlite3 module:', loadErr.message);
+    if (isVercel) {
+        db = createMockDb(loadErr.message);
     } else {
-        console.log('Connected to the SQLite database.');
-        initSchema();
+        throw loadErr;
     }
-});
+}
+
+function createMockDb(errorMsg) {
+    console.error('[DB MOCK] Database is disabled. Reason:', errorMsg);
+    return {
+        run: (sql, params, cb) => { if (typeof params === 'function') params(null); else if (cb) cb(null); },
+        get: (sql, params, cb) => { if (typeof params === 'function') params(null, null); else if (cb) cb(null, null); },
+        all: (sql, params, cb) => { if (typeof params === 'function') params(null, []); else if (cb) cb(null, []); },
+        prepare: () => ({ run: (p, cb) => { if (cb) cb(null); }, finalize: () => {} }),
+        serialize: (cb) => cb()
+    };
+}
 
 function initSchema() {
     db.serialize(() => {

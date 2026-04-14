@@ -19,44 +19,12 @@ app.use((req, res, next) => {
     next();
 });
 
-// Static Files
+// Startup Diagnostics
+console.log(`[STARTUP] Working Directory: ${process.cwd()}`);
+console.log(`[STARTUP] Entry Directory: ${__dirname}`);
+
+// Static Files (for Local Dev)
 app.use(express.static(path.join(__dirname, '../client/public')));
-
-const views = [
-    { route: '/', file: 'index.html' },
-    { route: '/login', file: 'login.html' },
-    { route: '/dashboard', file: 'admin/dashboard.html' },
-    { route: '/options', file: 'options.html' },
-    { route: '/print', file: 'print.html' },
-    { route: '/upload', file: 'upload.html' },
-    { route: '/preview', file: 'preview.html' },
-    // Keep raw html extensions working for backwards compatibility
-    { route: '/options.html', file: 'options.html' },
-    { route: '/print.html', file: 'print.html' },
-    { route: '/upload.html', file: 'upload.html' },
-    { route: '/preview.html', file: 'preview.html' }
-];
-
-views.forEach(({ route, file }) => {
-    app.get(route, (req, res) => {
-        const filePath = path.join(__dirname, `../client/views/${file}`);
-        res.sendFile(filePath, err => {
-            if (err) console.error(`[ERROR] Could not serve ${file}:`, err);
-            else console.log(`[DEBUG] Served ${file}`);
-        });
-    });
-});
-
-// Admin Dashboard
-app.get('/admin', (req, res) => {
-    const filePath = path.join(__dirname, '../client/views/admin/dashboard.html');
-    const fs = require('fs');
-    if (!fs.existsSync(filePath)) {
-        console.error('[ERROR] Admin dashboard file not found:', filePath);
-        return res.status(404).send('Admin Dashboard File Not Found');
-    }
-    res.sendFile(filePath);
-});
 
 const isVercel = process.env.VERCEL === '1';
 
