@@ -2,12 +2,25 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
 
-const dbPath = process.env.DB_PATH || path.join(__dirname, '../../database/kiosk.sqlite');
+const isVercel = process.env.VERCEL === '1';
+let dbPath = process.env.DB_PATH || path.join(__dirname, '../../database/kiosk.sqlite');
 
-// Ensure database directory exists
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir)){
-    fs.mkdirSync(dbDir, { recursive: true });
+if (isVercel) {
+    // Vercel has a read-only filesystem, except for /tmp
+    dbPath = '/tmp/kiosk.sqlite';
+    console.log('[DB] Running on Vercel, using /tmp for database');
+}
+
+// Ensure database directory exists (if not on Vercel)
+if (!isVercel) {
+    const dbDir = path.dirname(dbPath);
+    try {
+        if (!fs.existsSync(dbDir)){
+            fs.mkdirSync(dbDir, { recursive: true });
+        }
+    } catch (err) {
+        console.error('[DB] Failed to create database directory:', err.message);
+    }
 }
 
 const db = new sqlite3.Database(dbPath, (err) => {
