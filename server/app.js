@@ -62,18 +62,23 @@ app.get('/admin', (req, res) => {
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
 
-// Start Server
-app.listen(PORT, async () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log('[DEBUG] Server Ready');
+// Only start the server if this file is run directly (local development)
+if (require.main === module) {
+    app.listen(PORT, async () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+        console.log('[DEBUG] Server Ready');
 
-    // Auto-start tunnel if configured
-    if (process.env.ENABLE_TUNNEL === 'true') {
-        const tunnelService = require('./services/tunnelService');
-        await tunnelService.startTunnel(PORT);
-    }
+        // Auto-start tunnel if configured
+        if (process.env.ENABLE_TUNNEL === 'true') {
+            const tunnelService = require('./services/tunnelService');
+            await tunnelService.startTunnel(PORT);
+        }
 
-    // Initialize Scan Watcher
-    const scanWatcher = require('./services/scanWatcher');
-    scanWatcher.initialize();
-});
+        // Initialize Scan Watcher
+        const scanWatcher = require('./services/scanWatcher');
+        scanWatcher.initialize();
+    });
+}
+
+// Export for Vercel Serverless environment
+module.exports = app;
