@@ -3,16 +3,25 @@ const fileService = require('../services/fileService');
 const multer = require('multer');
 const path = require('path');
 
+const isVercel = process.env.VERCEL === '1';
+
 // Configure Multer Storage
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
-});
+let storage;
+
+if (isVercel) {
+    console.log('[UPLOAD] Cloud environment detected, using memoryStorage');
+    storage = multer.memoryStorage();
+} else {
+    storage = multer.diskStorage({
+        destination: (req, file, cb) => {
+            cb(null, 'uploads/');
+        },
+        filename: (req, file, cb) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+            cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+        }
+    });
+}
 
 const upload = multer({ storage: storage });
 
@@ -32,12 +41,20 @@ exports.uploadFile = async (req, res) => {
 
         try {
             const file = req.file;
+            let filePath;
+            
+            if (isVercel) {
+                // On Vercel, create a temporary file from buffer in /tmp
+                filePath = path.join('/tmp', `upload-${Date.now()}${path.extname(file.originalname)}`);
+                fs.writeFileSync(filePath, file.buffer);
+            } else {
+                filePath = path.join(__dirname, '../../uploads', file.filename);
+            }
             
             // Validate Logic using service
             fileService.validateFile(file);
             
             // Process File (Convert Images -> PDF, Count Pages)
-            const filePath = path.join(__dirname, '../../uploads', file.filename);
             const { pageCount, newFilePath } = await fileService.processFile(filePath, file.mimetype);
             
             // All documents stored and served are now technically PDFs

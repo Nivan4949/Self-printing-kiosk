@@ -5,9 +5,19 @@ const fs = require('fs');
 
 const isWindows = os.platform() === 'win32';
 
+const isVercel = process.env.VERCEL === '1';
+
 // List available printers
 exports.getPrinters = () => {
     return new Promise((resolve, reject) => {
+        if (isVercel) {
+            console.log('[PRINTER] Cloud environment, returning mock printers');
+            return resolve([
+                { name: 'Cloud_Virtual_Printer_Color', status: 'idle' },
+                { name: 'Cloud_Virtual_Printer_BW', status: 'idle' }
+            ]);
+        }
+
         // wmic is deprecated/removed in Windows 11, use PowerShell instead
         const cmd = isWindows ? 'powershell.exe -NoProfile -Command "Get-Printer | Select-Object -ExpandProperty Name"' : 'lpstat -a';
 

@@ -6,8 +6,14 @@ const { v4: uuidv4 } = require('uuid');
 
 const isWindows = os.platform() === 'win32';
 
+const isVercel = process.env.VERCEL === '1';
+
 exports.triggerScan = async () => {
     return new Promise(async (resolve, reject) => {
+        if (isVercel) {
+            return reject(new Error('Hardware scanning is only available on the physical kiosk machine. Please upload a file from your phone instead.'));
+        }
+
         if (!isWindows) {
             return reject(new Error('Scanning is only supported on Windows.'));
         }

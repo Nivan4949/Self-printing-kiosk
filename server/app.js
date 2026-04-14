@@ -58,6 +58,17 @@ app.get('/admin', (req, res) => {
     res.sendFile(filePath);
 });
 
+const isVercel = process.env.VERCEL === '1';
+
+// Health Check for monitoring
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'UP', 
+        environment: isVercel ? 'cloud' : 'local',
+        timestamp: new Date().toISOString() 
+    });
+});
+
 // API Routes
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
@@ -68,15 +79,17 @@ if (require.main === module) {
         console.log(`Server running on http://localhost:${PORT}`);
         console.log('[DEBUG] Server Ready');
 
-        // Auto-start tunnel if configured
-        if (process.env.ENABLE_TUNNEL === 'true') {
-            const tunnelService = require('./services/tunnelService');
-            await tunnelService.startTunnel(PORT);
-        }
+        if (!isVercel) {
+            // Auto-start tunnel if configured (Local Only)
+            if (process.env.ENABLE_TUNNEL === 'true') {
+                const tunnelService = require('./services/tunnelService');
+                await tunnelService.startTunnel(PORT);
+            }
 
-        // Initialize Scan Watcher
-        const scanWatcher = require('./services/scanWatcher');
-        scanWatcher.initialize();
+            // Initialize Scan Watcher (Local Only)
+            const scanWatcher = require('./services/scanWatcher');
+            scanWatcher.initialize();
+        }
     });
 }
 
