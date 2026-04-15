@@ -10,32 +10,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/server/app.js"
-    },
-    {
-      "source": "/admin",
-      "destination": "/client/views/admin/dashboard.html"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/client/views/admin/dashboard.html"
-    },
-    {
-      "source": "/favicon.ico",
-      "destination": "/client/public/favicon.ico"
-    },
-    {
-      "source": "/",
-      "destination": "/client/views/index.html"
-    },
-    {
-      "source": "/(.*).html",
-      "destination": "/client/views/$1.html"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/client/views/$1.html"
+      "destination": "/server/app.js"
     }
   ]
 }

@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 console.log(`[STARTUP] Working Directory: ${process.cwd()}`);
 console.log(`[STARTUP] Entry Directory: ${__dirname}`);
 
-// Static Files (for Local Dev)
+// Serve static assets from client/public (CSS, JS, icons, etc.)
 app.use(express.static(path.join(__dirname, '../client/public')));
 
 const isVercel = process.env.VERCEL === '1';
@@ -40,6 +40,46 @@ app.get('/api/health', (req, res) => {
 // API Routes
 const apiRoutes = require('./routes/api');
 app.use('/api', apiRoutes);
+
+// HTML Page Routes - serve client views for all page requests
+const viewsDir = path.join(__dirname, '../client/views');
+
+const htmlRoutes = [
+    { path: '/', file: 'index.html' },
+    { path: '/upload', file: 'upload.html' },
+    { path: '/upload.html', file: 'upload.html' },
+    { path: '/preview', file: 'preview.html' },
+    { path: '/preview.html', file: 'preview.html' },
+    { path: '/print', file: 'print.html' },
+    { path: '/print.html', file: 'print.html' },
+    { path: '/options', file: 'options.html' },
+    { path: '/options.html', file: 'options.html' },
+    { path: '/login', file: 'login.html' },
+    { path: '/login.html', file: 'login.html' },
+    { path: '/dashboard', file: 'dashboard.html' },
+    { path: '/dashboard.html', file: 'dashboard.html' },
+    { path: '/admin', file: 'admin/dashboard.html' },
+];
+
+htmlRoutes.forEach(({ path: routePath, file }) => {
+    app.get(routePath, (req, res) => {
+        res.sendFile(path.join(viewsDir, file));
+    });
+});
+
+// Catchall: try to serve any *.html from views folder
+app.get('/:page', (req, res, next) => {
+    const page = req.params.page.replace(/\.html$/, '');
+    const filePath = path.join(viewsDir, `${page}.html`);
+    res.sendFile(filePath, (err) => {
+        if (err) next(); // 404 if not found
+    });
+});
+
+// 404 Fallback
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not Found' });
+});
 
 // Only start the server if this file is run directly (local development)
 if (require.main === module) {
