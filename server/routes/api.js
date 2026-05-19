@@ -7,6 +7,7 @@ const uploadController = require('../controllers/uploadController');
 const printController = require('../controllers/printController');
 const authController = require('../controllers/authController');
 const adminController = require('../controllers/adminController');
+const paymentController = require('../controllers/paymentController');
 const scanWatcher = require('../services/scanWatcher');
 const printerService = require('../services/printerService');
 
@@ -43,7 +44,13 @@ router.get('/file/:filename', uploadController.serveFile);
 
 // Printer Routes
 router.get('/printers', printController.getPrinters);
-router.post('/print', printController.submitPrintJob);
+router.post('/print', printController.submitPrintJob); // Legacy/unprotected
+router.post('/print/start/:jobId', printController.startPrintJob); // Protected
+
+// Payment Routes
+router.post('/payment/create-order', paymentController.createOrder);
+router.post('/payment/verify', paymentController.verifyPayment);
+router.post('/payment/webhook', paymentController.webhook);
 
 // Admin Routes
 router.post('/admin/login', authController.login);

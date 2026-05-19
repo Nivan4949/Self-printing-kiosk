@@ -12,6 +12,7 @@
             /* overflow: hidden; Removed for responsiveness */
         }
     </style>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-8">
 
@@ -35,13 +36,29 @@
                         </div>
                         <div class="bg-gray-50 p-4 rounded-lg">
                             <label class="block text-sm font-semibold text-gray-500 mb-1">Color Mode</label>
-                            <div id="color-mode-display" class="text-2xl font-bold text-gray-800">B&W</div>
+                            <div class="flex bg-gray-200 rounded-lg p-1 mt-1">
+                                <button id="mode-bw" onclick="setMode(false)" class="flex-1 py-2 px-3 rounded-md text-sm font-bold transition-all bg-blue-600 text-white shadow-sm">B&W</button>
+                                <button id="mode-color" onclick="setMode(true)" class="flex-1 py-2 px-3 rounded-md text-sm font-bold transition-all text-gray-600 hover:bg-gray-300">Color</button>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <label class="block text-sm font-semibold text-gray-500 mb-1">Copies</label>
+                            <div class="flex items-center justify-between mt-1">
+                                <button onclick="updateCopies(-1)" class="w-10 h-10 flex items-center justify-center bg-white border border-gray-300 rounded-full text-2xl font-bold text-gray-600 hover:bg-gray-100">-</button>
+                                <div id="copy-count" class="text-2xl font-bold text-gray-800">1</div>
+                                <button onclick="updateCopies(1)" class="w-10 h-10 flex items-center justify-center bg-white border border-gray-300 rounded-full text-2xl font-bold text-gray-600 hover:bg-gray-100">+</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="bg-green-50 p-4 rounded-lg border-2 border-green-100">
-                        <label class="block text-sm font-semibold text-green-600 mb-1">Total Cost</label>
-                        <div id="total-cost" class="text-4xl font-bold text-green-700">₹ 0.00</div>
+                    <div class="bg-green-50 p-6 rounded-lg border-2 border-green-100 flex justify-between items-center">
+                        <div>
+                            <label class="block text-sm font-semibold text-green-600 mb-1">Total Estimated Cost</label>
+                            <div id="total-cost" class="text-4xl font-black text-green-700">₹ 0.00</div>
+                        </div>
+                        <div class="text-right text-xs text-green-600 font-medium">
+                            <div id="cost-breakdown">₹0.00 x 0 pages</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,7 +68,7 @@
                     Cancel
                 </button>
                 <button id="print-native-btn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl text-xl shadow-lg transition transform hover:scale-105">
-                    Print Document
+                    Print (Test)
                 </button>
             </div>
         </div>
@@ -93,16 +110,91 @@
                 PRICES.bw = parseFloat(config.price_bw);
                 PRICES.color = parseFloat(config.price_color);
                 
-                // Update UI buttons with new prices
-                document.getElementById('mode-bw').textContent = `B&W (₹${PRICES.bw})`;
-                document.getElementById('mode-color').textContent = `Color (₹${PRICES.color})`;
+                // Update UI text for mode buttons
+                updateCost();
             } catch (e) {
                 console.error('Error loading config:', e);
             }
         }
 
+        let availablePrinters = [];
+        async function fetchPrinters() {
+            try {
+                const res = await fetch('/api/printers');
+                const data = await res.json();
+                if(data.printers && data.printers.length > 0) {
+                    availablePrinters = data.printers;
+                }
+            } catch(e) {
+                console.error('Error fetching printers', e);
+            }
+        }
+
+        async function payAndPrint() {
+            if (!currentDoc) return;
+            const btn = document.getElementById('print-native-btn');
+            btn.disabled = true;
+            btn.textContent = 'Opening Print Dialog...';
+
+            try {
+                const fileUrl = `/api/file/${currentDoc.filename}?session=${sessionToken}`;
+                
+                // Create a hidden iframe specifically for printing to avoid Chromium DOM blocking
+                const printFrame = document.createElement('iframe');
+                printFrame.style.display = 'none';
+                printFrame.src = fileUrl;
+                
+                document.body.appendChild(printFrame);
+                
+                printFrame.onload = () => {
+                    setTimeout(() => {
+                        printFrame.contentWindow.focus();
+                        printFrame.contentWindow.print();
+                        
+                        btn.disabled = false;
+                        btn.textContent = 'Print (Test)';
+
+                        // Clean up and redirect after print dialog
+                        printFrame.contentWindow.onafterprint = () => {
+                            document.body.removeChild(printFrame);
+                            window.location.href = '/';
+                        };
+                    }, 500); // Give the browser PDF renderer time to instantiate
+                };
+
+            } catch (err) {
+                alert('Error: ' + err.message);
+                btn.disabled = false;
+                btn.textContent = 'Print (Test)';
+            }
+        }
+
+        function setMode(isColor) {
+            printOptions.color = isColor;
+            
+            const bwBtn = document.getElementById('mode-bw');
+            const colorBtn = document.getElementById('mode-color');
+            
+            if (isColor) {
+                colorBtn.className = "flex-1 py-2 px-3 rounded-md text-sm font-bold transition-all bg-blue-600 text-white shadow-sm";
+                bwBtn.className = "flex-1 py-2 px-3 rounded-md text-sm font-bold transition-all text-gray-600 hover:bg-gray-300";
+            } else {
+                bwBtn.className = "flex-1 py-2 px-3 rounded-md text-sm font-bold transition-all bg-blue-600 text-white shadow-sm";
+                colorBtn.className = "flex-1 py-2 px-3 rounded-md text-sm font-bold transition-all text-gray-600 hover:bg-gray-300";
+            }
+            
+            updateCost();
+        }
+
+        function updateCopies(delta) {
+            printOptions.copies = Math.max(1, printOptions.copies + delta);
+            document.getElementById('copy-count').textContent = printOptions.copies;
+            updateCost();
+        }
+
         async function loadPreview() {
             await loadConfig();
+            await fetchPrinters();
             
             if (!sessionToken) {
                 alert('Session Invalid');
@@ -122,30 +214,8 @@
                     
                     updateCost();
                     
-                    // Setup Native Print Button
-                    document.getElementById('print-native-btn').onclick = () => {
-                        const fileUrl = `/api/file/${currentDoc.filename}?session=${sessionToken}`;
-                        
-                        // Create a hidden iframe specifically for printing to avoid Chromium DOM blocking
-                        const printFrame = document.createElement('iframe');
-                        printFrame.style.display = 'none';
-                        printFrame.src = fileUrl;
-                        
-                        document.body.appendChild(printFrame);
-                        
-                        printFrame.onload = () => {
-                            setTimeout(() => {
-                                printFrame.contentWindow.focus();
-                                printFrame.contentWindow.print();
-                                
-                                // Clean up and redirect after print dialog
-                                printFrame.contentWindow.onafterprint = () => {
-                                    document.body.removeChild(printFrame);
-                                    window.location.href = '/';
-                                };
-                            }, 500); // Give the browser PDF renderer time to instantiate
-                        };
-                    };
+                    // Setup Pay & Print Button
+                    document.getElementById('print-native-btn').onclick = payAndPrint;
 
                     // Update Visual Preview using standard Embed
                     const fileUrl = `/api/file/${currentDoc.filename}?session=${sessionToken}#toolbar=0`;
@@ -184,9 +254,13 @@
 
         function updateCost() {
             if (!currentDoc) return;
-            // Native print dialog handles cost evaluation if needed, or we just display the price list in preview.
-            // For now, we clear the reactive cost since native OS dialog determines actual pages and copies printed.
-            document.getElementById('total-cost').innerHTML = `<span class="text-sm border-b">View in Dialog</span>`;
+            
+            const pages = parseInt(currentDoc.page_count) || 0;
+            const pricePerPage = printOptions.color ? PRICES.color : PRICES.bw;
+            const total = pages * pricePerPage * printOptions.copies;
+            
+            document.getElementById('total-cost').textContent = `₹ ${total.toFixed(2)}`;
+            document.getElementById('cost-breakdown').textContent = `₹${pricePerPage.toFixed(2)} x ${pages} pages ${printOptions.copies > 1 ? 'x ' + printOptions.copies + ' copies' : ''}`;
         }
 
         window.onload = loadPreview;

@@ -99,12 +99,21 @@ function initSchema() {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             document_id INTEGER,
             printer_name TEXT,
-            status TEXT DEFAULT 'queued', -- queued, printing, completed, failed
+            status TEXT DEFAULT 'PENDING_PAYMENT', -- PENDING_PAYMENT, PAID, PRINTING, PRINTED, PAYMENT_FAILED, CANCELLED
             cost REAL DEFAULT 0,
+            amount REAL DEFAULT 0,
             options TEXT, -- JSON string of print options
+            razorpay_order_id TEXT,
+            razorpay_payment_id TEXT,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(document_id) REFERENCES documents(id)
-        )`);
+        )`, (err) => {
+            if (!err) {
+                db.run(`ALTER TABLE print_jobs ADD COLUMN amount REAL DEFAULT 0`, () => {});
+                db.run(`ALTER TABLE print_jobs ADD COLUMN razorpay_order_id TEXT`, () => {});
+                db.run(`ALTER TABLE print_jobs ADD COLUMN razorpay_payment_id TEXT`, () => {});
+            }
+        });
 
         // Config Table
         db.run(`CREATE TABLE IF NOT EXISTS config (
